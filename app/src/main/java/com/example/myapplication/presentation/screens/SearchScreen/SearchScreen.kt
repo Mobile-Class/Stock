@@ -14,13 +14,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.myapplication.presentation.graph.Graph
+import com.example.myapplication.presentation.graph.RootNavigationGraph
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 
 @Composable
 fun SearchScreen(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     viewModel: CompanyListingsViewModel = hiltViewModel()
 ) {
     val swipeRefreshState = rememberSwipeRefreshState(
@@ -62,7 +65,7 @@ fun SearchScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                // TODO go to detail page
+                                navController.navigate(Graph.DETAILS)
                             }
                             .padding(16.dp)
                     )

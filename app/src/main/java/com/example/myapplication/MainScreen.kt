@@ -11,9 +11,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material.BottomNavigationItem
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.myapplication.presentation.graph.BottomBarScreen
+import com.example.myapplication.presentation.graph.BottomNavGraph
+import com.example.myapplication.presentation.screens.SearchScreen.CompanyListingsViewModel
 
 @Composable
-fun MainScreen(navController: NavHostController = rememberNavController()) {
+fun MainScreen(navController: NavHostController = rememberNavController()
+) {
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
     ) {
