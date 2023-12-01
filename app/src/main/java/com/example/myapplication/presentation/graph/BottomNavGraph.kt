@@ -22,6 +22,7 @@ import com.example.myapplication.presentation.screens.DetailScreen.EvaluationScr
 import com.example.myapplication.presentation.screens.DetailScreen.ProfileScreen.ProfileScreen
 import com.example.myapplication.presentation.screens.HomeScreen.HomeScreen
 import com.example.myapplication.presentation.screens.SearchScreen.SearchScreen
+import com.example.myapplication.presentation.screens.WatchlistScreen.WatchlistScreen
 
 @Composable
 fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValues) {
@@ -38,6 +39,12 @@ fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValue
         composable(route = BottomBarScreen.Search.route) {
             Box(modifier = Modifier.padding(paddingValues)) {
                 SearchScreen(navController)
+            }
+        }
+
+        composable(route = BottomBarScreen.Watchlist.route) {
+            Box(modifier = Modifier.padding(paddingValues)) {
+                WatchlistScreen()
             }
         }
 
