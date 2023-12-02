@@ -1,4 +1,4 @@
-package com.example.stock_analyzer.screens
+package com.example.myapplication
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
@@ -10,21 +10,22 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.stock_analyzer.BottomBarScreen
-import com.example.stock_analyzer.graph.HomeNavGraph
 import androidx.compose.material.BottomNavigationItem
-
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.myapplication.presentation.graph.BottomBarScreen
+import com.example.myapplication.presentation.graph.BottomNavGraph
+import com.example.myapplication.presentation.screens.SearchScreen.CompanyListingsViewModel
 
 @Composable
-fun HomeScreen(navController: NavHostController = rememberNavController()) {
+fun MainScreen(navController: NavHostController = rememberNavController()
+) {
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
     ) {
-        innerPaddingValue ->
-        HomeNavGraph(navController = navController, paddingValues = innerPaddingValue)
+            innerPaddingValue ->
+        BottomNavGraph(navController = navController, paddingValues = innerPaddingValue)
     }
 }
-
 
 @Composable
 fun BottomBar(navController: NavHostController) {

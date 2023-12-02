@@ -1,17 +1,19 @@
-package com.example.stock_analyzer
+package com.example.myapplication
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.compose.rememberNavController
-import com.example.stock_analyzer.graph.RootNavigationGraph
-import com.example.stock_analyzer.ui.theme.StockAnalyzerTheme
+import com.example.myapplication.presentation.graph.RootNavigationGraph
+import com.example.myapplication.ui.theme.MyApplicationTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            StockAnalyzerTheme {
+            MyApplicationTheme {
                 RootNavigationGraph(navController = rememberNavController())
             }
         }
