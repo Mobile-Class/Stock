@@ -19,14 +19,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,28 +39,44 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+
+
+
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
+    HomeContent(viewModel = viewModel)
+}
+
+@Composable
+fun HomeContent(
+    viewModel: HomeViewModel
+) {
     LazyColumn {
         item {
-            TrendingEarningsReportsBox()
+            TrendingEarningsReportsBox(viewModel.trendingEarningsData)
         }
         item {
-            TrendingStocksBox()
+            TrendingStocksBox(viewModel.trendingStocksData)
         }
         item {
-            MostActivesBox()
+            MostActivesBox(viewModel.mostActivesData)
         }
     }
 }
 
 @Composable
-fun TrendingEarningsReportsBox() {
+fun TrendingEarningsReportsBox(viewModel: LiveData<List<TrendingEarningsItem>>) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -150,7 +168,7 @@ fun TrendingEarningsCard(cardIndex: Int) {
 
 
 @Composable
-fun TrendingStocksBox() {
+fun TrendingStocksBox(viewModel: LiveData<List<TrendingStocksItem>>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -288,83 +306,76 @@ fun TrendingStocksBox() {
 
 
 @Composable
-fun MostActivesBox() {
+fun MostActivesBox(viewModel: LiveData<List<MostActivesItem>>) {
+    // Use remember to create a mutable state
+    var mostActivesData by remember { mutableStateOf<List<MostActivesItem>>(emptyList()) }
+
+    DisposableEffect(viewModel) {
+        val observer = Observer<List<MostActivesItem>> {
+            mostActivesData = it
+        }
+
+        val liveData = viewModel
+        liveData.observeForever(observer)
+
+        onDispose {
+            liveData.removeObserver(observer)
+        }
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        androidx.compose.material3.Text(
+        Text(
             text = "Most Actives",
-            style = androidx.compose.material3.MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight(700)),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight(700)),
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
-        // Row 1
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Color.White)
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        )
-        {
-            Column(){
-                androidx.compose.material3.Text(text = "Apple",            style = androidx.compose.material3.MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight(700)),
-                )
-            }
-            Column(){
-                androidx.compose.material3.Text(text = "Chart")
-            }
-            Column(
-                horizontalAlignment = Alignment.End
-            ){
-                Row {
-                    androidx.compose.material3.Text(text = "163.76")
-                }
-                Row {
-                    androidx.compose.material3.Text(text = "-1.94%")
-                }
-                Row {
-                    androidx.compose.material3.Text(text = "Post: -0.90%")
-                }
-            }
-        }
-        //Row 2
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Color.White)
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        )
-        {
-            Column(){
-                androidx.compose.material3.Text(text = "Facebook",    style = androidx.compose.material3.MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight(700)),)
-            }
-            Column(){
-                androidx.compose.material3.Text(text = "Chart")
-            }
-            Column(
-                horizontalAlignment = Alignment.End
-            ){
-                Row(
-                ) {
-                    androidx.compose.material3.Text(text = "163.76")
-                }
-                Row(
-                ) {
-                    androidx.compose.material3.Text(text = "-1.94%")
-                }
-                Row(
-                ) {
-                    androidx.compose.material3.Text(text = "Post: -0.90%")
-                }
-            }
-        }
 
+        mostActivesData.forEach { mostActivesItem ->
+            // Row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White)
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column() {
+                    Text(
+                        text = mostActivesItem.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                Column() {
+                    Text(text = mostActivesItem.chart)
+                }
+                Column(
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Row {
+                        Text(text = mostActivesItem.value)
+                    }
+                    Row {
+                        Text(text = mostActivesItem.change)
+                    }
+                    Row {
+                        Text(text = mostActivesItem.post)
+                    }
+                }
+            }
+        }
     }
 }
+
+
+
 
 @Composable
 @Preview
