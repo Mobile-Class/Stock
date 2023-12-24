@@ -1,58 +1,111 @@
 package com.example.myapplication.presentation.screens.HomeScreen
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.data.remote.StockApi
+import com.example.myapplication.data.repository.TopGainerRepository
+import com.example.myapplication.domain.model.mostActivelyTraded
+import com.example.myapplication.domain.model.topGainers
+import com.example.myapplication.domain.model.topLosers
+import com.example.myapplication.presentation.screens.SearchScreen.CompanyListingsEvent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-// ViewModel
-class HomeViewModel : ViewModel() {
+class HomeViewModel () : ViewModel() {
 
-    private val _trendingEarningsData = MutableLiveData<List<TrendingEarningsItem>>()
-    val trendingEarningsData: LiveData<List<TrendingEarningsItem>> get() = _trendingEarningsData
+    private val alphaVantageAPIForJSON = StockApi.createURLForJSON()
+    private val stockNewsRepository = TopGainerRepository(alphaVantageAPIForJSON)
 
-    private val _trendingStocksData = MutableLiveData<List<TrendingStocksItem>>()
-    val trendingStocksData: LiveData<List<TrendingStocksItem>> get() = _trendingStocksData
+    private val _state = mutableStateOf(HomeScreenState())
+    val state: State<HomeScreenState> get() = _state
 
-    private val _mostActivesData = MutableLiveData<List<MostActivesItem>>()
-    val mostActivesData: LiveData<List<MostActivesItem>> get() = _mostActivesData
+//   _state private val _refreshCompletedCompleted = mutableStateOf(false)
+//    val refreshCompleted: State<Boolean> get() = _refreshCompleted
 
     init {
-        // Initialize and fetch data here
-        fetchData()
+        getHomeScreenData()
     }
 
-    private fun fetchData() {
-        // Simulate data fetching or make a network request using viewModelScope
+    fun onEvent(event: HomeScreenEvent) {
+        when(event) {
+            is HomeScreenEvent.Refresh -> {
+                getHomeScreenData()
+//                _refreshCompleted.value = true
+                Log.d("ck","Refresh Data completed")
+            }
+
+            else -> {}
+        }
+    }
+
+
+    private fun getHomeScreenData() {
         viewModelScope.launch {
-            val trendingEarningsList = generateTrendingEarnings(4)
-            val trendingStocksList = generateTrendingStocks(2)
-            val mostActivesList = generateMostActives(2)
+            try {
+                _state.value = _state.value.copy(isLoading = true)
+                val topGainersList = stockNewsRepository.getTopGainers()
+                val topLosersList = stockNewsRepository.getTopLosers()
+                val mostActivelyTradedList = stockNewsRepository.getMostActivelyTraded()
+                topGainersHandleSuccess(topGainersList)
+                topLosersHandleSuccess(topLosersList)
+                topActivelyTradedHandleSuccess(mostActivelyTradedList)
 
-            _trendingEarningsData.value = trendingEarningsList
-            _trendingStocksData.value = trendingStocksList
-            _mostActivesData.value = mostActivesList
+            }  catch (e: Exception) {
+                handleError(e.message ?: "Unknown error")
+            } finally {
+                handleLoading(false)
+//                _refreshCompleted.value = false
+//                Log.d("ck", "Refresh Data Error")
+            }
         }
     }
 
-    private fun generateTrendingEarnings(count: Int): List<TrendingEarningsItem> {
-        return List(count) { index ->
-            TrendingEarningsItem("Company $index", "Short Slogan", "11/11/2023")
-        }
+    private fun topGainersHandleSuccess(data: List<topGainers>?) {
+        _state.value = _state.value.copy(
+            topGainers = data,
+            isLoading = false,
+            error = null
+        )
+//        onRefreshCompleted()
     }
 
-    private fun generateTrendingStocks(count: Int): List<TrendingStocksItem> {
-        return List(count) { index ->
-            TrendingStocksItem("Stock $index", "+${(0..10).random()}%", "${(10..50).random()} Symbols")
-        }
+    private fun topLosersHandleSuccess(data: List<topLosers>?) {
+        _state.value = _state.value.copy(
+            topLosers = data,
+            isLoading = false,
+            error = null
+        )
+//        onRefreshCompleted()
     }
 
-    private fun generateMostActives(count: Int): List<MostActivesItem> {
-        return List(count) { index ->
-            MostActivesItem("Item $index", "Chart", "${(100..200).random()}.76", "-${(1..5).random()}%", "Post: -${(1..5).random()}%")
-        }
+    private fun topActivelyTradedHandleSuccess(data: List<mostActivelyTraded>?) {
+        _state.value = _state.value.copy(
+            mostActivelyTraded = data,
+            isLoading = false,
+            error = null
+        )
+//        onRefreshCompleted()
+    }
+
+
+    private fun handleError(errorMessage: String) {
+        _state.value = _state.value.copy(
+            isLoading = false,
+            error = errorMessage
+        )
+//        onRefreshCompleted()
+    }
+
+    private fun handleLoading(isLoading: Boolean) {
+        _state.value = _state.value.copy(isLoading = isLoading)
+    }
+
+    private fun onRefreshCompleted() {
+//        _refreshCompleted.value = true
+        Log.d("ck", "Refresh Data completed")
     }
 }
-

@@ -10,16 +10,10 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import androidx.navigation.navigation
-import com.example.myapplication.MainScreen
 import com.example.myapplication.presentation.screens.DetailScreen.DetailScreen
-import com.example.myapplication.presentation.screens.DetailScreen.EvaluationScreen.EvaluationScreen
-import com.example.myapplication.presentation.screens.DetailScreen.ProfileScreen.ProfileScreen
 import com.example.myapplication.presentation.screens.HomeScreen.HomeScreen
 import com.example.myapplication.presentation.screens.SearchScreen.SearchScreen
 import com.example.myapplication.presentation.screens.WatchlistScreen.WatchlistScreen
