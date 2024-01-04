@@ -3,7 +3,6 @@ package com.example.myapplication.presentation.screens.HomeScreen
 import com.example.myapplication.domain.model.mostActivelyTraded
 import com.example.myapplication.domain.model.topGainers
 import com.example.myapplication.domain.model.topLosers
-import kotlinx.coroutines.flow.emptyFlow
 
 data class HomeScreenState(
     val topGainers: List<topGainers>? = emptyList(),

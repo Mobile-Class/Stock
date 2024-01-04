@@ -1,6 +1,7 @@
 package com.example.myapplication.data.remote
 
 import android.text.SpannableString
+import com.example.myapplication.domain.model.News
 import com.example.myapplication.domain.model.mostActivelyTraded
 import com.example.myapplication.domain.model.topGainers
 import com.example.myapplication.domain.model.topLosers
@@ -26,7 +27,7 @@ interface StockApi {
         @Query("apikey") apiKey: String = API_KEY
     ): ResponseBody
 
-    @GET("/query?function=TOP_GAINERS_LOSERS")
+    @GET("query?function=TOP_GAINERS_LOSERS")
     suspend fun getTopTrendEarnings(
         @Query("apikey") apiKey: String = API_KEY
     ): TopGainersResponse
@@ -38,15 +39,27 @@ interface StockApi {
 
     )
 
-    @GET("/query?function=TOP_TREND_STOCKS")
-    suspend fun getTopTrendStocks(
-        @Query("apikey") apiKey: String = API_KEY
-    ): ResponseBody
+    @GET("query?function=NEWS_SENTIMENT")
+    suspend fun getGeneralNews (
+        @Query("apikey") apikey: String = API_KEY
+    ) : ListingFeed
 
-    @GET("/query?function=MOST_ACTIVES")
-    suspend fun getMostActives(
-        @Query("apikey") apiKey: String = API_KEY
-    ): ResponseBody
+    @GET("query?function=NEWS_SENTIMENT")
+    suspend fun getNewsForStock (
+        @Query("tickers") tickers : String,
+        @Query("limit") limit : String = "10",
+        @Query("apikey") apikey: String = API_KEY
+    ) : ListingFeed
+
+    @GET("query?function=NEWS_SENTIMENT")
+    suspend fun getNewsWithCategory (
+        @Query("topics") topics : String,
+        @Query("apikey") apikey: String = API_KEY
+    ) : ListingFeed
+
+    class ListingFeed(
+        val feed: List<News>
+    )
 
 
     companion object {

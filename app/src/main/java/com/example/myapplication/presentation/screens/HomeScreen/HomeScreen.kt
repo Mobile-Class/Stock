@@ -53,16 +53,26 @@ fun HomeScreen() {
                 viewModel.onEvent(HomeScreenEvent.Refresh)
             }
         ) {
-            // LazyColumn
-            LazyColumn {
-                item {
-                    RowList("Top Gainers", state.topGainers)
-                }
-                item {
-                    RowList("Top Losers", state.topLosers)
-                }
-                item {
-                    RowList("Most Actively Traded", state.mostActivelyTraded)
+
+            if(state.topGainers == null || state.topLosers == null || state.mostActivelyTraded == null) {
+                Text(
+                    text = "Loading",
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                )
+            }
+            else {
+                // LazyColumn
+                LazyColumn {
+                    item {
+                        RowList("Top Gainers", state.topGainers)
+                    }
+                    item {
+                        RowList("Top Losers", state.topLosers)
+                    }
+                    item {
+                        RowList("Most Actively Traded", state.mostActivelyTraded)
+                    }
                 }
             }
         }
@@ -95,14 +105,23 @@ fun RowList(title: String, list: List<Any>?) {
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
             )
-            LazyRow {
-                items(list.take(3)) { item ->
-                    when (item) {
-                        is topGainers -> GainerItem(item)
-                        is topLosers -> LosersItem(item)
-                        is mostActivelyTraded -> ActivelyTradedItem(item)
+            if (list != null && list.isNotEmpty()) {
+                LazyRow {
+                    items(list.take(3)) { item ->
+                        when (item) {
+                            is topGainers -> GainerItem(item)
+                            is topLosers -> LosersItem(item)
+                            is mostActivelyTraded -> ActivelyTradedItem(item)
+                        }
                     }
                 }
+            } else {
+                // Display a message when the list is empty
+                Text(
+                    text = "List is empty",
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                )
             }
         }
     }
@@ -169,6 +188,5 @@ fun GainerItemContent(ticker: String, price: String, changeAmount: String, chang
 @Preview(showBackground = true)
 @Composable
 fun PreviewHomeScreen() {
-    // You can use this for previewing your HomeScreen
     HomeScreen()
 }
