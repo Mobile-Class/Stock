@@ -1,7 +1,10 @@
 package com.example.myapplication.presentation.screens.HomeScreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +21,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -102,12 +106,16 @@ fun RowList(title: String, list: List<Any>?) {
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+                color = MaterialTheme.colors.primary
             )
-            if (list != null && list.isNotEmpty()) {
-                LazyRow {
-                    items(list.take(3)) { item ->
+            if (list.isNotEmpty()) {
+                LazyRow(
+                    contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(list.take(5)) { item ->
                         when (item) {
                             is topGainers -> GainerItem(item)
                             is topLosers -> LosersItem(item)
@@ -120,7 +128,8 @@ fun RowList(title: String, list: List<Any>?) {
                 Text(
                     text = "List is empty",
                     style = MaterialTheme.typography.body2,
-                    modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+                    color = MaterialTheme.colors.onPrimary
                 )
             }
         }
@@ -139,8 +148,59 @@ fun LosersItem(item: topLosers) {
 
 @Composable
 fun ActivelyTradedItem(item: mostActivelyTraded) {
-    GainerItemContent(item.ticker, item.price, item.changeAmount, item.changePercentage, item.volume)
+    ActivelyTradedItemContent(item.ticker, item.price, item.changeAmount, item.changePercentage, item.volume)
 }
+
+@Composable
+fun ActivelyTradedItemContent(ticker: String, price: String, changeAmount: String, changePercentage: String, volume: String) {
+        Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        elevation = 8.dp,
+        shape = RoundedCornerShape(16.dp),
+        backgroundColor = Color(0xFF222222)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            Text(
+                text = " $ticker ", // Add spaces around ticker for visual separation
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier
+                    .background(MaterialTheme.colors.primary)
+                    .padding(4.dp)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Prc: $price",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onPrimary
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = if (changeAmount.startsWith('-')) "▼ $changeAmount" else "▲ $changeAmount",
+                style = MaterialTheme.typography.body1,
+                color = if (changeAmount.startsWith('-')) Color(0xFFFF0000) else Color(0xFF00FF00)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "$changePercentage",
+                style = MaterialTheme.typography.body1,
+                color = if (changeAmount.startsWith('-')) Color(0xFFFF0000) else Color(0xFF00FF00)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Vol: ${abbreviateVolume(volume)}",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onPrimary
+            )
+        }
+    }
+}
+
 
 @Composable
 fun GainerItemContent(ticker: String, price: String, changeAmount: String, changePercentage: String, volume: String) {
@@ -149,38 +209,55 @@ fun GainerItemContent(ticker: String, price: String, changeAmount: String, chang
             .fillMaxWidth()
             .padding(8.dp),
         elevation = 8.dp,
-        shape = RoundedCornerShape(16.dp)
-
+        shape = RoundedCornerShape(16.dp),
+        backgroundColor = Color(0xFF222222)
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
         ) {
             Text(
-                text = "Ticker: $ticker",
-                style = MaterialTheme.typography.body1
+                text = " $ticker ", // Add spaces around ticker for visual separation
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier
+                    .background(MaterialTheme.colors.primary)
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Price: $price",
-                style = MaterialTheme.typography.body2
+                text = "Prc: $price",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onPrimary
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Change Amount: $changeAmount",
-                style = MaterialTheme.typography.body2
+                text = if (changeAmount.startsWith('-')) "▼ $changeAmount" else "▲ $changeAmount",
+                style = MaterialTheme.typography.body1,
+                color = if (changeAmount.startsWith('-')) Color(0xFFFF0000) else Color(0xFF00FF00)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Change Percentage: $changePercentage",
-                style = MaterialTheme.typography.body2
+                text = "$changePercentage",
+                style = MaterialTheme.typography.body1,
+                color = if (changeAmount.startsWith('-')) Color(0xFFFF0000) else Color(0xFF00FF00)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Volume: $volume",
-                style = MaterialTheme.typography.body2
+                text = "Vol: ${abbreviateVolume(volume)}",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onPrimary
             )
         }
+    }
+}
+
+private fun abbreviateVolume(volume: String): String {
+    val volumeValue = volume.toDouble()
+    return when {
+        volumeValue >= 1e6 -> "${String.format("%.2f", volumeValue / 1e6)}M"
+        volumeValue >= 1e3 -> "${String.format("%.2f", volumeValue / 1e3)}K"
+        else -> volume
     }
 }
 
