@@ -118,4 +118,7 @@ dependencies {
     implementation ("androidx.webkit:webkit:1.4.0")
     implementation ("androidx.core:core-ktx:1.7.0")
 
+    //Grid
+    implementation ("androidx.compose.foundation:foundation:1.2.0")
+
 }
