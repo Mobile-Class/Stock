@@ -1,6 +1,11 @@
 package com.example.myapplication.data.remote
 
 import android.text.SpannableString
+import com.example.myapplication.data.remote.dto.CompanyBalanceSheetDto
+import com.example.myapplication.data.remote.dto.CompanyCashFlowDto
+import com.example.myapplication.data.remote.dto.CompanyIncomeStatementDto
+import com.example.myapplication.data.remote.dto.CompanyInfoDto
+import com.example.myapplication.domain.model.CompanyIncomeStatement
 import com.example.myapplication.domain.model.News
 import com.example.myapplication.domain.model.mostActivelyTraded
 import com.example.myapplication.domain.model.topGainers
@@ -128,4 +133,29 @@ interface StockApi {
             }
         }
     }
+
+    @GET("query?function=OVERVIEW")
+    suspend fun getCompanyInfo(
+        @Query("symbol") symbol: String,
+        @Query("apikey") apiKey: String = API_KEY
+    ): CompanyInfoDto
+
+    @GET("query?function=BALANCE_SHEET")
+    suspend fun getCompanyBalanceSheet(
+        @Query("symbol") symbol: String,
+        @Query("apikey") apiKey: String = API_KEY
+    ): CompanyBalanceSheetDto
+
+    @GET("query?function=INCOME_STATEMENT")
+    suspend fun getCompanyIncomeStatement(
+        @Query("symbol") symbol: String,
+        @Query("apikey") apiKey: String = API_KEY
+    ): CompanyIncomeStatementDto
+
+    @GET("query?function=CASH_FLOW")
+    suspend fun getCompanyCashFlow(
+        @Query("symbol") symbol: String,
+        @Query("apikey") apiKey: String = API_KEY
+    ): CompanyCashFlowDto
+
 }

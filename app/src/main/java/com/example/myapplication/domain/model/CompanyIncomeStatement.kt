@@ -1,0 +1,30 @@
+package com.example.myapplication.domain.model
+
+data class CompanyIncomeStatement (
+    val fiscalDateEnding : String,
+    val reportedCurrency : String,
+    val grossProfit : String,
+    val totalRevenue : String,
+    val costOfRevenue : String,
+    val costofGoodsAndServicesSold : String,
+    val operatingIncome : String,
+    val sellingGeneralAndAdministrative : String,
+    val researchAndDevelopment : String,
+    val operatingExpenses : String,
+    val investmentIncomeNet : String,
+    val netInterestIncome : String,
+    val interestIncome : String,
+    val interestExpense : String,
+    val nonInterestIncome : String,
+    val otherNonOperatingIncome : String,
+    val depreciation : String,
+    val depreciationAndAmortization : String,
+    val incomeBeforeTax : String,
+    val incomeTaxExpense : String,
+    val interestAndDebtExpense : String,
+    val netIncomeFromContinuingOperations : String,
+    val comprehensiveIncomeNetOfTax : String,
+    val ebit : String,
+    val ebitda : String,
+    val netIncome : String
+)

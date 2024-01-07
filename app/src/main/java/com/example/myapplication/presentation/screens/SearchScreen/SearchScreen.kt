@@ -65,7 +65,7 @@ fun SearchScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                navController.navigate(Graph.DETAILS)
+                                navController.navigate("${Graph.DETAILS}/${company.symbol}")
                             }
                             .padding(16.dp)
                     )

@@ -10,9 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.example.myapplication.presentation.screens.DetailScreen.CompanyInfoViewModel
 
 @Composable
-fun EvaluationScreen() {
+fun EvaluationScreen(symbol: String,  viewModel: CompanyInfoViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -20,7 +21,7 @@ fun EvaluationScreen() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Evaluation",
+            text = symbol,
             fontSize = MaterialTheme.typography.h3.fontSize,
             fontWeight = FontWeight.Bold,
             color = Color.White

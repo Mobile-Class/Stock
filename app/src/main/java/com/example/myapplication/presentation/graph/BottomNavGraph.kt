@@ -42,8 +42,17 @@ fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValue
             }
         }
 
-        composable(route = Graph.DETAILS) {
-            DetailScreen(navController)
+        composable("${Graph.DETAILS}/{symbol}") { backStackEntry ->
+            val symbol = backStackEntry.arguments?.getString("symbol")
+
+            if (symbol != null) {
+                // Ticker is not null, proceed to DetailScreen
+                DetailScreen(navController, symbol)
+            } else {
+                // Ticker is null, handle this case appropriately
+                // For example, navigate back or show an error message
+                navController.navigateUp()
+            }
         }
     }
 }

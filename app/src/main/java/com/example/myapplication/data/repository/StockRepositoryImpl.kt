@@ -1,10 +1,19 @@
 package com.example.myapplication.data.repository
 
+import android.util.Log
 import com.example.myapplication.data.csv.CSVParser
 import com.example.myapplication.data.local.StockDatabase
+import com.example.myapplication.data.mapper.toCompanyBalanceSheet
+import com.example.myapplication.data.mapper.toCompanyCashFlow
+import com.example.myapplication.data.mapper.toCompanyIncomeStatement
+import com.example.myapplication.data.mapper.toCompanyInfo
 import com.example.myapplication.data.mapper.toCompanyListing
 import com.example.myapplication.data.mapper.toCompanyListingEntity
 import com.example.myapplication.data.remote.StockApi
+import com.example.myapplication.domain.model.CompanyBalanceSheet
+import com.example.myapplication.domain.model.CompanyCashFlow
+import com.example.myapplication.domain.model.CompanyIncomeStatement
+import com.example.myapplication.domain.model.CompanyInfo
 import com.example.myapplication.domain.model.CompanyListing
 import com.example.myapplication.domain.repository.StockRepository
 import com.example.myapplication.util.Resource
@@ -67,6 +76,84 @@ class StockRepositoryImpl @Inject constructor(
                 ))
                 emit(Resource.Loading(false))
             }
+        }
+    }
+
+    override suspend fun getCompanyInfo(symbol: String): Resource<CompanyInfo> {
+        return try {
+            val result = api.getCompanyInfo(symbol)
+            print(result)
+            Resource.Success(result.toCompanyInfo())
+        } catch(e: IOException) {
+            e.printStackTrace()
+            Resource.Error(
+                message = "Couldn't load company info"
+            )
+        } catch(e: HttpException) {
+            e.printStackTrace()
+            Resource.Error(
+                message = "Couldn't load company info"
+            )
+        }
+    }
+
+    override suspend fun getCompanyBalanceSheet(symbol: String): Resource<List<CompanyBalanceSheet>> {
+        return try {
+            val result = api.getCompanyBalanceSheet(symbol)
+            Log.e("Balance Sheet", result.toString())
+            Resource.Success(
+                data = result.annualReports.map { it.toCompanyBalanceSheet() }
+            )
+        } catch(e: IOException) {
+            e.printStackTrace()
+            Resource.Error(
+                message = "Couldn't load company info"
+            )
+        } catch(e: HttpException) {
+            e.printStackTrace()
+            Resource.Error(
+                message = "Couldn't load company info"
+            )
+        }
+    }
+
+    override suspend fun getCompanyIncomeStatement(symbol: String): Resource<List<CompanyIncomeStatement>> {
+        return try {
+            val result = api.getCompanyIncomeStatement(symbol)
+            Log.e("Income Statement ", result.toString())
+            Resource.Success(
+                data = result.annualReports.map { it.toCompanyIncomeStatement() }
+            )
+        } catch(e: IOException) {
+            e.printStackTrace()
+            Resource.Error(
+                message = "Couldn't load company info"
+            )
+        } catch(e: HttpException) {
+            e.printStackTrace()
+            Resource.Error(
+                message = "Couldn't load company info"
+            )
+        }
+    }
+
+    override suspend fun getCompanyCashFlow(symbol: String): Resource<List<CompanyCashFlow>> {
+        return try {
+            val result = api.getCompanyCashFlow(symbol)
+            Log.e("Cash Flow", result.toString())
+            Resource.Success(
+                data = result.annualReports.map { it.toCompanyCashFlow() }
+            )
+        } catch(e: IOException) {
+            e.printStackTrace()
+            Resource.Error(
+                message = "Couldn't load company info"
+            )
+        } catch(e: HttpException) {
+            e.printStackTrace()
+            Resource.Error(
+                message = "Couldn't load company info"
+            )
         }
     }
 }

@@ -15,18 +15,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myapplication.presentation.screens.DetailScreen.EvaluationScreen.EvaluationScreen
 import com.example.myapplication.presentation.screens.DetailScreen.ProfileScreen.ProfileScreen
 
 @Composable
-fun DetailScreen(navController: NavController) {
+fun DetailScreen(navController: NavController, symbol: String, viewModel: CompanyInfoViewModel = hiltViewModel()) {
     var tabIndex by remember { mutableStateOf(0) }
     val tabTitles = listOf("Profile", "Evaluation")
 
     Column {
         TopAppBar(
-            title = { Text("Detail Information") },
+            title = { Text("Detail Information for $symbol") }, // Display ticker in the title
             navigationIcon = {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
@@ -44,8 +45,8 @@ fun DetailScreen(navController: NavController) {
         }
 
         when (tabIndex) {
-            0 -> ProfileScreen()
-            1 -> EvaluationScreen()
+            0 -> ProfileScreen(symbol, viewModel) // Pass ticker to ProfileScreen
+            1 -> EvaluationScreen(symbol, viewModel) // Pass ticker to EvaluationScreen
         }
     }
 }
