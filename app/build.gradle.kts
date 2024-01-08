@@ -120,5 +120,8 @@ dependencies {
 
     //Grid
     implementation ("androidx.compose.foundation:foundation:1.2.0")
+    // implementation "io.coil-kt:coil-compose:1.5.2"
+    implementation ("io.coil-kt:coil-compose:2.5.0")
+
 
 }

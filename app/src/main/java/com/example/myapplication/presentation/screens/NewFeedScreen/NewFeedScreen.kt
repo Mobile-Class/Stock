@@ -1,39 +1,42 @@
     package com.example.myapplication.presentation.screens.NewFeedScreen
 
+    import android.util.Log
+    import androidx.compose.foundation.Image
     import androidx.compose.foundation.background
     import androidx.compose.foundation.clickable
+    import androidx.compose.foundation.layout.Arrangement
     import androidx.compose.foundation.layout.Box
     import androidx.compose.foundation.layout.Column
-    import androidx.compose.foundation.layout.IntrinsicSize
+    import androidx.compose.foundation.layout.Row
+    import androidx.compose.foundation.layout.Spacer
     import androidx.compose.foundation.layout.fillMaxSize
     import androidx.compose.foundation.layout.fillMaxWidth
     import androidx.compose.foundation.layout.height
     import androidx.compose.foundation.layout.padding
-    import androidx.compose.foundation.layout.paddingFromBaseline
+    import java.text.SimpleDateFormat
+    import java.util.Date
+    import java.util.Locale
     import androidx.compose.foundation.lazy.LazyColumn
     import androidx.compose.foundation.lazy.LazyRow
     import androidx.compose.foundation.lazy.items
     import androidx.compose.material.Button
     import androidx.compose.material.Card
     import androidx.compose.material.CircularProgressIndicator
-    import androidx.compose.material.Icon
     import androidx.compose.material.MaterialTheme
-    import androidx.compose.material.OutlinedTextField
     import androidx.compose.material.Text
-    import androidx.compose.material.icons.Icons
-    import androidx.compose.material.icons.filled.Search
     import androidx.compose.runtime.Composable
+    import androidx.compose.runtime.rememberUpdatedState
     import androidx.compose.ui.Alignment
     import androidx.compose.ui.Modifier
+    import androidx.compose.ui.draw.clip
     import androidx.compose.ui.graphics.Color
+    import androidx.compose.ui.layout.ContentScale
     import androidx.compose.ui.text.font.FontWeight
     import androidx.compose.ui.tooling.preview.Preview
     import androidx.compose.ui.unit.dp
     import androidx.hilt.navigation.compose.hiltViewModel
-    import androidx.navigation.NavHostController
+    import coil.compose.rememberImagePainter
     import com.example.myapplication.domain.model.News
-    import com.example.myapplication.presentation.graph.Graph
-    import com.example.myapplication.presentation.screens.HomeScreen.HomeScreenEvent
     import com.google.accompanist.swiperefresh.SwipeRefresh
     import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
@@ -79,38 +82,17 @@
                         viewModel.onEvent(NewFeedEvent.Refresh)
                     }
                 ) {
-    //                Text(
-    //                    text = "News",
-    //                    style = MaterialTheme.typography.h5,
-    //                    fontWeight = FontWeight.Bold,
-    //                    color = MaterialTheme.colors.primary,
-    //                    modifier = Modifier
-    //                        .paddingFromBaseline(top = 32.dp, bottom = 16.dp)
-    //                )
-
-    //            OutlinedTextField(
-    //                value = state.searchQuery,
-    //                onValueChange = { newQuery ->
-    //                    viewModel.onEvent(NewFeedEvent.OnSearchQueryChange(newQuery))
-    //                },
-    //                label = { Text("Search for a menu item") },
-    ////                leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
-    //                modifier = Modifier
-    //                    .fillMaxWidth()
-    //                    .padding(vertical = 16.dp)
-    //            )
-
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colors.primary)
+//                            .background(MaterialTheme.colors.primary)
                     ) {
                         items(state.news ?: emptyList()) { news ->
-                            NewsItem(news, onNewsClick = {
-                                // Trigger the new event to navigate to the detail screen with the URL
-                                viewModel.onEvent(NewFeedEvent.NavigateToDetail(it))
-
-                            })
+                            NewsItem(news,
+                                onNewsClick = {
+//                                viewModel.onEvent(NewFeedEvent.NavigateToDetail(it))
+                            }
+                            )
                         }
                     }
                 }
@@ -126,29 +108,33 @@
         selectedCategory: String,
         onButtonClick: (String) -> Unit
     ) {
+        val selectedCategoryState = rememberUpdatedState(selectedCategory)
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
         ) {
             items(buttons) { button ->
-                val backgroundColor = if (button == selectedCategory) {
-                    MaterialTheme.colors.secondary
-                    // Set the selected button color
-                } else {
+                val isButtonSelected = button == selectedCategoryState.value
 
-                    MaterialTheme.colors.primary
-                    // Set the unselected button color
-                }
-
-                Button(
-                    onClick = { onButtonClick(button) },
+                Column(
                     modifier = Modifier
                         .padding(end = 8.dp)
-                        .height(IntrinsicSize.Max)
-                        .background(backgroundColor)
+                        .clickable { onButtonClick(button) }
+                        .clip(MaterialTheme.shapes.small)
                 ) {
-                    Text(text = button)
+                    Box(
+                        modifier = Modifier
+                            .background(if (isButtonSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primary)
+                            .padding(8.dp)
+                            .clip(MaterialTheme.shapes.small)
+                    ) {
+                        Text(
+                            text = button,
+                            color = MaterialTheme.colors.background,
+                            fontWeight = if (isButtonSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
                 }
             }
         }
@@ -167,18 +153,109 @@
                 modifier = Modifier
                     .padding(16.dp)
                     .clickable {
-                        onNewsClick(news.url ?: "") // Truyền URL khi tin tức được click
+                        onNewsClick(news.url ?: "")
                     }
             ) {
-                Text(
-                    text = "Title: ${news.title ?: "N/A"}",
-                    style = MaterialTheme.typography.h6,
-                    fontWeight = FontWeight.Bold
-                )
+                // Banner Image
+                news.banner_image?.let { imageUrl ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .clip(MaterialTheme.shapes.medium)
+                    ) {
+                        Image(
+                            painter = rememberImagePainter(imageUrl),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Title
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.primary)
+                ) {
+                    Text(
+                        text = "Title: ${news.title ?: "N/A"}",
+                        style = MaterialTheme.typography.h6,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.onPrimary,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clip(MaterialTheme.shapes.small)
+                    )
+                }
+
+
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Summary
                 Text(text = "Summary: ${news.summary ?: "N/A"}")
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Source
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    Text(
+                        text = "${news.source ?: "N/A"}",
+
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clip(MaterialTheme.shapes.small))
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Time Published:
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Text(
+//                        text = "${news.time_published}",
+                        text = formatNewsTime(news.time_published), //
+
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clip(MaterialTheme.shapes.small)
+                    )
+                }
             }
         }
     }
+    fun formatNewsTime(time: String?): String {
+        return try {
+            val originalFormat = SimpleDateFormat("yyyyMMdd'T'HHmmss", Locale.getDefault())
+            val parsedDate = originalFormat.parse(time ?: "") ?: Date()
+
+            val newFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
+            val formattedDate = newFormat.format(parsedDate)
+
+            Log.d("DateFormat", "Original: $time, Formatted: $formattedDate")
+
+            formattedDate
+        } catch (e: Exception) {
+            Log.e("DateFormat", "Error formatting date: $e")
+            "N/A"
+        }
+    }
+
 
 
     @Composable
