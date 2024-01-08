@@ -30,7 +30,9 @@ class CompanyInfoViewModel @Inject constructor(
             val balanceSheetResult = async { repository.getCompanyBalanceSheet(symbol) }
             val incomeStatementResult = async { repository.getCompanyIncomeStatement(symbol) }
             val cashFlowResult = async { repository.getCompanyCashFlow(symbol) }
+            val intradayInfoResult = async { repository.getIntradayInfo(symbol) }
 
+            //Company overview data
             when(val result = companyInfoResult.await()) {
                 is Resource.Success -> {
                     state = state.copy(
@@ -49,6 +51,7 @@ class CompanyInfoViewModel @Inject constructor(
                 else -> Unit
             }
 
+            // Balancce Sheet Data
             when(val result = balanceSheetResult.await()) {
                 is Resource.Success -> {
                     state = state.copy(
@@ -67,6 +70,7 @@ class CompanyInfoViewModel @Inject constructor(
                 else -> Unit
             }
 
+            // Income Statement Data
             when(val result = incomeStatementResult.await()) {
                 is Resource.Success -> {
                     state = state.copy(
@@ -85,6 +89,7 @@ class CompanyInfoViewModel @Inject constructor(
                 else -> Unit
             }
 
+            // Cash Flow Data
             when(val result = cashFlowResult.await()) {
                 is Resource.Success -> {
                     state = state.copy(
@@ -103,6 +108,24 @@ class CompanyInfoViewModel @Inject constructor(
                 else -> Unit
             }
 
+            // Chart Data
+            when(val result = intradayInfoResult.await()) {
+                is Resource.Success -> {
+                    state = state.copy(
+                        stockInfos = result.data ?: emptyList(),
+                        isLoading = false,
+                        error = null
+                    )
+                }
+                is Resource.Error -> {
+                    state = state.copy(
+                        isLoading = false,
+                        error = result.message,
+                        company = null
+                    )
+                }
+                else -> Unit
+            }
         }
     }
 }

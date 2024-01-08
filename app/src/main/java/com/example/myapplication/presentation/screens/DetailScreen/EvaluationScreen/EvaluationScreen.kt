@@ -5,6 +5,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,18 +35,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.presentation.screens.DetailScreen.CompanyInfoViewModel
+import com.example.myapplication.R
+import com.example.myapplication.ui.theme.Gr
 
 @Composable
 fun EvaluationScreen(symbol: String,  viewModel: CompanyInfoViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Magenta),
+            .background(Gr),
         contentAlignment = Alignment.Center
     ) {
         val pillars = listOf(
@@ -89,12 +93,36 @@ fun PillarCard(pillar: PillarData, isExpanded: Boolean, onClick: () -> Unit) {
                 fontSize = 16.sp
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = pillar.value,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = if (pillar.isPositive) Color.Green else Color.Red
-            )
+            // Display the value with the corresponding image
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    contentAlignment = Alignment.CenterEnd,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                ) {
+                    Text(
+                        text = pillar.value,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (pillar.isPositive) Color.Green else Color.Red
+                    )
+                }
+                Box(
+                    contentAlignment = Alignment.CenterStart,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                ) {
+                    Image(
+                        painter = painterResource(id = if (pillar.isPositive) R.drawable.checkmark else R.drawable.xmark),
+                        contentDescription = if (pillar.isPositive) "Positive" else "Negative",
+                        modifier = Modifier
+                            .size(36.dp) // Set the size of the image
+                    )
+                }
+
+            }
             AnimatedVisibility(
                 visible = isExpanded,
                 enter = fadeIn() + expandVertically(),

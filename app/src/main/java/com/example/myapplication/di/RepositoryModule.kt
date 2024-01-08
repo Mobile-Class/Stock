@@ -2,8 +2,10 @@ package com.example.myapplication.di
 
 import com.example.myapplication.data.csv.CSVParser
 import com.example.myapplication.data.csv.CompanyListingsParser
+import com.example.myapplication.data.csv.IntradayInfoParser
 import com.example.myapplication.data.repository.StockRepositoryImpl
 import com.example.myapplication.domain.model.CompanyListing
+import com.example.myapplication.domain.model.IntradayInfo
 import com.example.myapplication.domain.repository.StockRepository
 import dagger.Binds
 import dagger.Module
@@ -21,11 +23,11 @@ abstract class RepositoryModule {
         companyListingsParser: CompanyListingsParser
     ): CSVParser<CompanyListing>
 
-    /*@Binds
+    @Binds
     @Singleton
     abstract fun bindIntradayInfoParser(
         intradayInfoParser: IntradayInfoParser
-    ): CSVParser<IntradayInfo>*/
+    ): CSVParser<IntradayInfo>
 
     @Binds
     @Singleton

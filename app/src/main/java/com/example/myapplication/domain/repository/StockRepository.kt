@@ -7,6 +7,7 @@ import com.example.myapplication.util.Resource
 import kotlinx.coroutines.flow.Flow
 import com.example.myapplication.domain.model.CompanyListing
 import com.example.myapplication.domain.model.CompanyIncomeStatement
+import com.example.myapplication.domain.model.IntradayInfo
 
 interface StockRepository {
     suspend fun getCompanyListings(
@@ -30,4 +31,7 @@ interface StockRepository {
         symbol: String
     ): Resource<List<CompanyCashFlow>>
 
+    suspend fun getIntradayInfo(
+        symbol: String
+    ): Resource<List<IntradayInfo>>
 }

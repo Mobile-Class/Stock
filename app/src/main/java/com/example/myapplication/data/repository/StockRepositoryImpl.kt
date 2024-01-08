@@ -15,6 +15,7 @@ import com.example.myapplication.domain.model.CompanyCashFlow
 import com.example.myapplication.domain.model.CompanyIncomeStatement
 import com.example.myapplication.domain.model.CompanyInfo
 import com.example.myapplication.domain.model.CompanyListing
+import com.example.myapplication.domain.model.IntradayInfo
 import com.example.myapplication.domain.repository.StockRepository
 import com.example.myapplication.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +30,7 @@ class StockRepositoryImpl @Inject constructor(
     private val api: StockApi,
     private val db: StockDatabase,
     private val companyListingsParser: CSVParser<CompanyListing>,
-//    private val intradayInfoParser: CSVParser<IntradayInfo>,
+    private val intradayInfoParser: CSVParser<IntradayInfo>,
 ): StockRepository {
 
     private val dao = db.dao
@@ -153,6 +154,24 @@ class StockRepositoryImpl @Inject constructor(
             e.printStackTrace()
             Resource.Error(
                 message = "Couldn't load company info"
+            )
+        }
+    }
+
+    override suspend fun getIntradayInfo(symbol: String): Resource<List<IntradayInfo>> {
+        return try {
+            val response = api.getIntradayInfo(symbol)
+            val results = intradayInfoParser.parse(response.byteStream())
+            Resource.Success(results)
+        } catch(e: IOException) {
+            e.printStackTrace()
+            Resource.Error(
+                message = "Couldn't load intraday info"
+            )
+        } catch(e: HttpException) {
+            e.printStackTrace()
+            Resource.Error(
+                message = "Couldn't load intraday info"
             )
         }
     }

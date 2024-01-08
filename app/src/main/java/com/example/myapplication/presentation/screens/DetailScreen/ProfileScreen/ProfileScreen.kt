@@ -1,5 +1,7 @@
 package com.example.myapplication.presentation.screens.DetailScreen.ProfileScreen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.presentation.screens.DetailScreen.CompanyInfoViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(symbol: String, viewModel: CompanyInfoViewModel) {
     Box(
@@ -85,14 +88,14 @@ fun ProfileScreen(symbol: String, viewModel: CompanyInfoViewModel) {
                         modifier = Modifier.fillMaxWidth(),
                     )
                     /*if(state.stockInfos.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Text(text = "Market Summary")
-                        Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         StockChart(
                             infos = state.stockInfos,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(250.dp)
+                                .height(125.dp)
                                 .align(Alignment.CenterHorizontally)
                         )
                     }*/
