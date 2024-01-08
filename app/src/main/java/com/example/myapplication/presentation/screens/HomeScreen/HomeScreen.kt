@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.myapplication.domain.model.mostActivelyTraded
 import com.example.myapplication.domain.model.topGainers
 import com.example.myapplication.domain.model.topLosers
+import com.example.myapplication.domain.model.userWatchList
 import com.example.myapplication.presentation.screens.SearchScreen.CompanyListingsEvent
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -73,6 +74,10 @@ fun HomeScreen() {
                     item {
                         RowList("Most Actively Traded", state.mostActivelyTraded)
                     }
+                    item{
+                        RowList("Your Watchlist", state.userWatchList)
+                    }
+
                 }
             }
         }
@@ -141,6 +146,14 @@ fun LosersItem(item: topLosers) {
 fun ActivelyTradedItem(item: mostActivelyTraded) {
     GainerItemContent(item.ticker, item.price, item.changeAmount, item.changePercentage, item.volume)
 }
+
+@Composable
+fun WatchlistItem(item: userWatchList)
+{
+    GainerItemContent(item.ticker, item.price, item.changeAmount, item.changePercentage, item.volume)
+}
+
+
 
 @Composable
 fun GainerItemContent(ticker: String, price: String, changeAmount: String, changePercentage: String, volume: String) {

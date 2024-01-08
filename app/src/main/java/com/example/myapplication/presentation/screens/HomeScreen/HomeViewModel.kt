@@ -10,6 +10,7 @@ import com.example.myapplication.data.repository.TopGainerRepository
 import com.example.myapplication.domain.model.mostActivelyTraded
 import com.example.myapplication.domain.model.topGainers
 import com.example.myapplication.domain.model.topLosers
+import com.example.myapplication.domain.model.userWatchList
 import com.example.myapplication.presentation.screens.SearchScreen.CompanyListingsEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -50,6 +51,7 @@ class HomeViewModel () : ViewModel() {
                 val topGainersList = stockNewsRepository.getTopGainers()
                 val topLosersList = stockNewsRepository.getTopLosers()
                 val mostActivelyTradedList = stockNewsRepository.getMostActivelyTraded()
+                val userWatchList =
                 topGainersHandleSuccess(topGainersList)
                 topLosersHandleSuccess(topLosersList)
                 topActivelyTradedHandleSuccess(mostActivelyTradedList)
@@ -92,6 +94,7 @@ class HomeViewModel () : ViewModel() {
     }
 
 
+
     private fun handleError(errorMessage: String) {
         _state.value = _state.value.copy(
             isLoading = false,
@@ -108,4 +111,7 @@ class HomeViewModel () : ViewModel() {
 //        _refreshCompleted.value = true
         Log.d("ck", "Refresh Data completed")
     }
+
+
+
 }

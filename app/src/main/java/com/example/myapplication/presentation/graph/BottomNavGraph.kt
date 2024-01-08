@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
@@ -17,6 +18,7 @@ import com.example.myapplication.presentation.screens.DetailScreen.DetailScreen
 import com.example.myapplication.presentation.screens.HomeScreen.HomeScreen
 import com.example.myapplication.presentation.screens.NewFeedScreen.NewFeedScreen
 import com.example.myapplication.presentation.screens.SearchScreen.SearchScreen
+import com.example.myapplication.presentation.screens.WatchlistScreen.WatchlistScreen
 
 @Composable
 fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValues) {
@@ -39,6 +41,12 @@ fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValue
         composable(route = BottomBarScreen.NewFeed.route) {
             Box(modifier = Modifier.padding(paddingValues)) {
                 NewFeedScreen()
+            }
+        }
+
+        composable(route = BottomBarScreen.WatchList.route){
+            Box(modifier = Modifier.padding(paddingValues)) {
+                WatchlistScreen(navController)
             }
         }
 
@@ -68,5 +76,11 @@ sealed class BottomBarScreen(
         route = "NewFeed",
         title = "NewFeed",
         icon = Icons.Default.Star
+    )
+
+    object WatchList : BottomBarScreen(
+        route = "Watchlist",
+        title = "Watchlist",
+        icon = Icons.Default.Flag
     )
 }

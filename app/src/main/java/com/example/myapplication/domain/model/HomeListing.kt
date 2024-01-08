@@ -29,3 +29,14 @@ data class mostActivelyTraded(
     val changePercentage: String,
     val volume: String
 )
+
+
+data class userWatchList(
+    val ticker: String,
+    val price: String,
+    @SerializedName("change_amount")
+    val changeAmount: String,
+    @SerializedName("change_percentage")
+    val changePercentage: String,
+    val volume: String
+)
