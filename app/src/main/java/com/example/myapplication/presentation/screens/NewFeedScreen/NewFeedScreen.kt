@@ -29,19 +29,26 @@
     import androidx.compose.ui.Alignment
     import androidx.compose.ui.Modifier
     import androidx.compose.ui.draw.clip
+    import androidx.compose.ui.graphics.BlendMode.Companion.Screen
     import androidx.compose.ui.graphics.Color
     import androidx.compose.ui.layout.ContentScale
     import androidx.compose.ui.text.font.FontWeight
     import androidx.compose.ui.tooling.preview.Preview
     import androidx.compose.ui.unit.dp
     import androidx.hilt.navigation.compose.hiltViewModel
+    import androidx.navigation.NavHostController
     import coil.compose.rememberImagePainter
     import com.example.myapplication.domain.model.News
+    import com.example.myapplication.presentation.graph.Graph
+    import com.example.myapplication.presentation.screens.SearchScreen.CompanyListingsViewModel
     import com.google.accompanist.swiperefresh.SwipeRefresh
     import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
     @Composable
-    fun NewFeedScreen() {
+    fun NewFeedScreen(
+        navController: NavHostController,
+//        viewModel: NewFeedViewModel = hiltViewModel()
+    ) {
         val viewModel = hiltViewModel<NewFeedViewModel>()
         val state = viewModel.state.value
         val swipeRefreshState = rememberSwipeRefreshState(
@@ -85,13 +92,17 @@
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-//                            .background(MaterialTheme.colors.primary)
                     ) {
-                        items(state.news ?: emptyList()) { news ->
-                            NewsItem(news,
-                                onNewsClick = {
-//                                viewModel.onEvent(NewFeedEvent.NavigateToDetail(it))
-                            }
+                        items(state.news.size) { i ->
+                            val news = state.news[i]
+                            NewsItem(
+                                news= news,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+//                                        navController.navigate("${Graph.NEW_FEED_DETAIL}/${news.url}")
+                                    }
+                                    .padding(vertical = 8.dp),
                             )
                         }
                     }
@@ -100,6 +111,18 @@
             CircularIndeterminateProgressBar(isDisplayed = state.isLoading)
         }
     }
+//    @Composable
+//    fun Clickable(
+//        onClick: () -> Unit,
+//        modifier: Modifier = Modifier,
+//        content: @Composable (Modifier) -> Unit
+//    ) {
+//        Box(
+//            modifier = modifier.clickable { onClick() }
+//        ) {
+//            content(Modifier)
+//        }
+//    }
 
 
     @Composable
@@ -141,20 +164,18 @@
     }
 
     @Composable
-    fun NewsItem(news: News, onNewsClick: (String) -> Unit) {
+    fun NewsItem(
+        news: News,
+        modifier: Modifier = Modifier
+    ) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+            modifier = modifier,
             elevation = 8.dp,
             shape = MaterialTheme.shapes.medium
         ) {
             Column(
                 modifier = Modifier
                     .padding(16.dp)
-                    .clickable {
-                        onNewsClick(news.url ?: "")
-                    }
             ) {
                 // Banner Image
                 news.banner_image?.let { imageUrl ->
@@ -182,7 +203,7 @@
                         .background(MaterialTheme.colors.primary)
                 ) {
                     Text(
-                        text = "Title: ${news.title ?: "N/A"}",
+                        text = "${news.title ?: "N/A"}",
                         style = MaterialTheme.typography.h6,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colors.onPrimary,
@@ -192,17 +213,14 @@
                     )
                 }
 
-
-
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Summary
-                Text(text = "Summary: ${news.summary ?: "N/A"}")
+                Text(text = "${news.summary ?: "N/A"}")
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Source
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -220,7 +238,6 @@
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Time Published:
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -228,8 +245,7 @@
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-//                        text = "${news.time_published}",
-                        text = formatNewsTime(news.time_published), //
+                        text = formatNewsTime(news.time_published),
 
                         modifier = Modifier
                             .padding(8.dp)
@@ -256,15 +272,12 @@
         }
     }
 
-
-
     @Composable
     fun CircularIndeterminateProgressBar(isDisplayed: Boolean) {
         if (isDisplayed) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f))
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -274,8 +287,8 @@
         }
     }
 
-    @Preview(showBackground = true)
-    @Composable
-    fun PreviewNewFeedScreen() {
-        NewFeedScreen()
-    }
+//    @Preview(showBackground = true)
+//    @Composable
+//    fun PreviewNewFeedScreen() {
+//        NewFeedScreen(navController)
+//    }

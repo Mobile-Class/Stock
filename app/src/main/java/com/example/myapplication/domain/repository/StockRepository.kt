@@ -31,7 +31,7 @@ interface StockRepository {
         symbol: String
     ): Resource<List<CompanyCashFlow>>
 
-    suspend fun getIntradayInfo(
-        symbol: String
-    ): Resource<List<IntradayInfo>>
+//    suspend fun getIntradayInfo(
+//        symbol: String
+//    ): Resource<List<IntradayInfo>>
 }

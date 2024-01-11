@@ -1,15 +1,22 @@
 package com.example.myapplication.data.mapper
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.myapplication.data.local.CompanyListingEntity
 import com.example.myapplication.data.remote.dto.BalanceSheetAnnualReport
 import com.example.myapplication.data.remote.dto.CashFlowAnnualReport
 import com.example.myapplication.data.remote.dto.CompanyInfoDto
 import com.example.myapplication.data.remote.dto.IncomeStatementAnnualReport
+import com.example.myapplication.data.remote.dto.IntradayInfoDto
 import com.example.myapplication.domain.model.CompanyBalanceSheet
 import com.example.myapplication.domain.model.CompanyCashFlow
 import com.example.myapplication.domain.model.CompanyIncomeStatement
 import com.example.myapplication.domain.model.CompanyInfo
 import com.example.myapplication.domain.model.CompanyListing
+import com.example.myapplication.domain.model.IntradayInfo
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 fun CompanyListingEntity.toCompanyListing(): CompanyListing {
     return CompanyListing(
@@ -144,3 +151,36 @@ fun CashFlowAnnualReport.toCompanyCashFlow() : CompanyCashFlow{
         netIncome = netIncome ?: ""
     )
 }
+
+//@RequiresApi(Build.VERSION_CODES.O)
+//fun IntradayInfoDto.toIntradayList(): List<IntradayInfo> {
+//    val pattern = "yyyy-MM-dd HH:mm:ss"
+//    val formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
+//
+//    return timeSeries.entries.mapNotNull { entry ->
+//        val timestamp = entry.key.timestamp
+//        val localDateTime = LocalDateTime.parse(timestamp, formatter)
+//        val close = entry.value.close.toDoubleOrNull()
+//
+//        // Only include entries where close can be converted to Double
+//        if (close != null) {
+//            IntradayInfo(
+//                date = localDateTime,
+//                close = close
+//            )
+//        } else {
+//            null
+//        }
+//    }
+//}
+
+//@RequiresApi(Build.VERSION_CODES.O)
+//fun IntradayInfoDto.toIntraday() : IntradayInfo {
+//    val pattern = "yyyy-MM-dd HH:mm:ss"
+//    val formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
+//    val localDateTime = LocalDateTime.parse(, formatter)
+//    return IntradayInfo(
+//        date = localDateTime,
+//        close = close
+//    )
+//}

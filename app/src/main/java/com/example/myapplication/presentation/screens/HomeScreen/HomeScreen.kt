@@ -96,7 +96,10 @@ fun HomeScreen() {
         when {
             state.isLoading -> {
                 // Display loading indicator
-                CircularProgressIndicator()
+                CircularIndeterminateProgressBar(
+                    isDisplayed = state.isLoading
+                )
+
             }
             state.error != null -> {
                 // Handle error
@@ -107,7 +110,20 @@ fun HomeScreen() {
     }
 }
 
-// ...
+@Composable
+fun CircularIndeterminateProgressBar(isDisplayed: Boolean) {
+    if (isDisplayed) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = MaterialTheme.colors.primary,
+            )
+        }
+    }
+}
 
 @Composable
 fun RowList(title: String, list: List<Any>?) {

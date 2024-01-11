@@ -5,6 +5,7 @@ import com.example.myapplication.data.remote.dto.CompanyBalanceSheetDto
 import com.example.myapplication.data.remote.dto.CompanyCashFlowDto
 import com.example.myapplication.data.remote.dto.CompanyIncomeStatementDto
 import com.example.myapplication.data.remote.dto.CompanyInfoDto
+import com.example.myapplication.data.remote.dto.IntradayInfoDto
 import com.example.myapplication.domain.model.CompanyIncomeStatement
 import com.example.myapplication.domain.model.News
 import com.example.myapplication.domain.model.mostActivelyTraded
@@ -68,11 +69,7 @@ interface StockApi {
 
 
     companion object {
-        const val API_KEY = "LSV36CEZ47SULMPM"
-
-//        const val API_KEY = "ZZZ0H0IO4EG9QQX6"
-
-//        const val API_KEY = "demo"
+        const val API_KEY = "DCXKD7J70IWCLMET"
 
         const val BASE_URL = "https://alphavantage.co"
 
@@ -163,8 +160,15 @@ interface StockApi {
     ): CompanyCashFlowDto
 
     @GET("query?function=TIME_SERIES_INTRADAY&interval=60min&datatype=csv")
-    suspend fun getIntradayInfo(
+    suspend fun getStockGraphInfo(
         @Query("symbol") symbol: String,
         @Query("apikey") apiKey: String = API_KEY
     ): ResponseBody
+
+//    @GET("query?function=TIME_SERIES_DAILY_ADJUSTED")
+//    suspend fun getStockGraphInfo(
+//        @Query("symbol") symbol: String,
+//        @Query("datatype") datatype : String = "csv",
+//        @Query("apikey") apikey: String = API_KEY
+//    ) : ResponseBody
 }

@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.myapplication.presentation.screens.DetailScreen.DetailScreen
 import com.example.myapplication.presentation.screens.HomeScreen.HomeScreen
+import com.example.myapplication.presentation.screens.NewFeedScreen.NewFeedDetailScreen.NewFeedDetailScreen
 import com.example.myapplication.presentation.screens.NewFeedScreen.NewFeedScreen
 import com.example.myapplication.presentation.screens.SearchScreen.SearchScreen
 
@@ -24,7 +25,9 @@ fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValue
         navController = navController,
         route = Graph.MAIN,
         startDestination = BottomBarScreen.Search.route,
-    ) {
+//        startDestination = BottomBarScreen.NewFeed.route,
+
+        ) {
         composable(route = BottomBarScreen.Home.route) {
             Box(modifier = Modifier.padding(paddingValues)) {
                 HomeScreen()
@@ -38,7 +41,7 @@ fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValue
 
         composable(route = BottomBarScreen.NewFeed.route) {
             Box(modifier = Modifier.padding(paddingValues)) {
-                NewFeedScreen()
+                NewFeedScreen(navController)
             }
         }
 
@@ -48,6 +51,19 @@ fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValue
             if (symbol != null) {
                 // Ticker is not null, proceed to DetailScreen
                 DetailScreen(navController, symbol)
+            } else {
+                // Ticker is null, handle this case appropriately
+                // For example, navigate back or show an error message
+                navController.navigateUp()
+            }
+        }
+
+        composable("${Graph.NEW_FEED_DETAIL}/{url}") { backStackEntry ->
+            val newsUrl = backStackEntry.arguments?.getString("url")
+
+            if (newsUrl != null) {
+                // Ticker is not null, proceed to DetailScreen
+                NewFeedDetailScreen(navController, newsUrl)
             } else {
                 // Ticker is null, handle this case appropriately
                 // For example, navigate back or show an error message

@@ -30,7 +30,7 @@ class StockRepositoryImpl @Inject constructor(
     private val api: StockApi,
     private val db: StockDatabase,
     private val companyListingsParser: CSVParser<CompanyListing>,
-    private val intradayInfoParser: CSVParser<IntradayInfo>,
+//    private val intradayInfoParser: CSVParser<IntradayInfo>,
 ): StockRepository {
 
     private val dao = db.dao
@@ -158,21 +158,22 @@ class StockRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getIntradayInfo(symbol: String): Resource<List<IntradayInfo>> {
-        return try {
-            val response = api.getIntradayInfo(symbol)
-            val results = intradayInfoParser.parse(response.byteStream())
-            Resource.Success(results)
-        } catch(e: IOException) {
-            e.printStackTrace()
-            Resource.Error(
-                message = "Couldn't load intraday info"
-            )
-        } catch(e: HttpException) {
-            e.printStackTrace()
-            Resource.Error(
-                message = "Couldn't load intraday info"
-            )
-        }
-    }
+//    override suspend fun getIntradayInfo(symbol: String): Resource<List<IntradayInfo>> {
+//        return try {
+//            val response = api.getIntradayInfo(symbol)
+//            Log.e("getIntradayInfo 0", response.toString())
+//            val results = intradayInfoParser.parse(response.byteStream())
+//            Resource.Success(results)
+//        } catch(e: IOException) {
+//            e.printStackTrace()
+//            Resource.Error(
+//                message = "Couldn't load intraday info"
+//            )
+//        } catch(e: HttpException) {
+//            e.printStackTrace()
+//            Resource.Error(
+//                message = "Couldn't load intraday info"
+//            )
+//        }
+//    }
 }

@@ -1,6 +1,8 @@
 package com.example.myapplication.presentation.screens.DetailScreen
 
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -20,6 +22,7 @@ import androidx.navigation.NavController
 import com.example.myapplication.presentation.screens.DetailScreen.EvaluationScreen.EvaluationScreen
 import com.example.myapplication.presentation.screens.DetailScreen.ProfileScreen.ProfileScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreen(navController: NavController, symbol: String, viewModel: CompanyInfoViewModel = hiltViewModel()) {
     var tabIndex by remember { mutableStateOf(0) }

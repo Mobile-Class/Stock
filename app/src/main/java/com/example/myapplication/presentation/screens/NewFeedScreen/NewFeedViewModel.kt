@@ -8,17 +8,28 @@ import androidx.navigation.NavHostController
 import com.example.myapplication.data.remote.StockApi
 import com.example.myapplication.data.repository.NewsRepository
 import com.example.myapplication.domain.model.News
-import com.example.myapplication.presentation.graph.Graph
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NewFeedViewModel() : ViewModel() {
+@HiltViewModel
+class NewFeedViewModel @Inject constructor(
+): ViewModel() {
     private lateinit var navController: NavHostController
-
+    fun setNavController(navController: NavHostController) {
+        this.navController = navController
+    }
     private val alphaVantageAPIForJSON = StockApi.createURLForJSON()
     private val stockNewsRepository = NewsRepository(alphaVantageAPIForJSON)
     private val _state = mutableStateOf(NewFeedState())
     val state: State<NewFeedState> get() = _state
 //    private var searchJob: Job? = null
+    private val _selectedUrl = mutableStateOf<String?>(null)
+    val selectedUrl: State<String?> = _selectedUrl
+
+    fun setSelectedUrl(url: String) {
+        _selectedUrl.value = url
+    }
 
     init {
         getNewsList("General") // Set a default category
@@ -33,10 +44,8 @@ class NewFeedViewModel() : ViewModel() {
                 _state.value = _state.value.copy(selectedCategory = event.category)
                 getNewsList(event.category)
             }
-            is NewFeedEvent.NavigateToDetail -> {
-                println("event url ${event.url}")
-                navController.navigate("${Graph.NEW_FEED_DETAIL}?newsUrl=${event.url}")
-            }
+
+            else -> {}
         }
     }
 
@@ -58,7 +67,7 @@ class NewFeedViewModel() : ViewModel() {
         }
     }
 
-    private fun getGeneralNewsHandleSuccess(data: List<News>?) {
+    private fun getGeneralNewsHandleSuccess(data: List<News>) {
         _state.value = _state.value.copy(
             news = data,
             isLoading = false,

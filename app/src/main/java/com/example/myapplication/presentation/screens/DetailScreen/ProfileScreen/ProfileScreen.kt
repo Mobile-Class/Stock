@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.myapplication.presentation.screens.DetailScreen.CompanyInfoViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -30,8 +31,8 @@ import com.example.myapplication.presentation.screens.DetailScreen.CompanyInfoVi
 fun ProfileScreen(symbol: String, viewModel: CompanyInfoViewModel) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Magenta),
+            .fillMaxSize(),
+//            .background(Color.Magenta),
         contentAlignment = Alignment.Center
     ) {
         val state = viewModel.state
@@ -39,7 +40,7 @@ fun ProfileScreen(symbol: String, viewModel: CompanyInfoViewModel) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)
+//                    .background(Color.White)
                     .padding(18.dp)
             ) {
                 state.company?.let { company ->
@@ -47,7 +48,7 @@ fun ProfileScreen(symbol: String, viewModel: CompanyInfoViewModel) {
                         text = company.name,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
-                        overflow = TextOverflow.Ellipsis,
+//                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -87,18 +88,22 @@ fun ProfileScreen(symbol: String, viewModel: CompanyInfoViewModel) {
                         fontSize = 12.sp,
                         modifier = Modifier.fillMaxWidth(),
                     )
-                    /*if(state.stockInfos.isNotEmpty()) {
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                    if(state.stockInfos.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(text = "Market Summary")
                         Spacer(modifier = Modifier.height(16.dp))
                         StockChart(
-                            infos = state.stockInfos,
+                            info = state.stockInfos,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(125.dp)
                                 .align(Alignment.CenterHorizontally)
                         )
-                    }*/
+                    }
                 }
             }
         }

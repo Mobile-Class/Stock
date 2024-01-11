@@ -16,40 +16,41 @@ import com.example.myapplication.domain.model.IntradayInfo
 import kotlin.math.round
 import kotlin.math.roundToInt
 
-@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.O) //TODO fix that
 @Composable
 fun StockChart(
-    infos: List<IntradayInfo> = emptyList(),
     modifier: Modifier = Modifier,
+    info: List<IntradayInfo> = emptyList(),
     graphColor: Color = Color.Green
 ) {
+
     val spacing = 100f
     val transparentGraphColor = remember {
         graphColor.copy(alpha = 0.5f)
     }
-    val upperValue = remember(infos) {
-        (infos.maxOfOrNull { it.close }?.plus(1))?.roundToInt() ?: 0
+    val upperValue = remember(info) {
+        (info.maxOfOrNull { it.close }?.plus(1))?.roundToInt() ?: 0
     }
-    val lowerValue = remember(infos) {
-        infos.minOfOrNull { it.close }?.toInt() ?: 0
+    val lowerValue = remember(info) {
+        info.minOfOrNull { it.close }?.toInt() ?: 0
     }
     val density = LocalDensity.current
     val textPaint = remember(density) {
         Paint().apply {
-            color = android.graphics.Color.WHITE
+            color = android.graphics.Color.BLACK
             textAlign = Paint.Align.CENTER
             textSize = density.run { 12.sp.toPx() }
         }
     }
     Canvas(modifier = modifier) {
-        val spacePerHour = (size.width - spacing) / infos.size
-        (0 until infos.size - 1 step 2).forEach { i ->
-            val info = infos[i]
-            val hour = info.date.hour
+        val spacePreHour = (size.width - spacing) / info.size
+        (0 until info.size - 1 step 2).forEach { i ->
+            val infos = info[i]
+            val hour = infos.timeStamp.hour
             drawContext.canvas.nativeCanvas.apply {
                 drawText(
                     hour.toString(),
-                    spacing + i * spacePerHour,
+                    spacing + i * spacePreHour,
                     size.height - 5,
                     textPaint
                 )
@@ -60,7 +61,7 @@ fun StockChart(
             drawContext.canvas.nativeCanvas.apply {
                 drawText(
                     round(lowerValue + priceStep * i).toString(),
-                    30f,
+                    30f, //TODO fix hardcode
                     size.height - spacing - i * size.height / 5f,
                     textPaint
                 )
@@ -69,17 +70,16 @@ fun StockChart(
         var lastX = 0f
         val strokePath = Path().apply {
             val height = size.height
-            for(i in infos.indices) {
-                val info = infos[i]
-                val nextInfo = infos.getOrNull(i + 1) ?: infos.last()
-                val leftRatio = (info.close - lowerValue) / (upperValue - lowerValue)
+            for (i in info.indices) {
+                val infos = info[i]
+                val nextInfo = info.getOrNull(i + 1) ?: info.last()
+                val leftRatio = (infos.close - lowerValue) / (upperValue - lowerValue)
                 val rightRatio = (nextInfo.close - lowerValue) / (upperValue - lowerValue)
-
-                val x1 = spacing + i * spacePerHour
+                val x1 = spacing + i * spacePreHour
                 val y1 = height - spacing - (leftRatio * height).toFloat()
-                val x2 = spacing + (i + 1) * spacePerHour
+                val x2 = spacing + (i + 1) * spacePreHour
                 val y2 = height - spacing - (rightRatio * height).toFloat()
-                if(i == 0) {
+                if (i == 0) {
                     moveTo(x1, y1)
                 }
                 lastX = (x1 + x2) / 2f
