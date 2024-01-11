@@ -40,7 +40,10 @@ fun CompanyInfoDto.toCompanyInfo(): CompanyInfo {
         description = description ?: "",
         name = name ?: "",
         country = country ?: "",
-        industry = industry ?: ""
+        industry = industry ?: "",
+        pe = pe ?: "",
+        shares = shares ?: "",
+        marketCap = marketCap ?: ""
     )
 }
 

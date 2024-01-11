@@ -6,4 +6,7 @@ data class CompanyInfo(
     val name: String,
     val country: String,
     val industry: String,
+    val pe : String,
+    val shares : String,
+    val marketCap : String
 )
