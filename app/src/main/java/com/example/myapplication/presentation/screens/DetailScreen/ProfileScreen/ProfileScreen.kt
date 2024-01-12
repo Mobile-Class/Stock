@@ -96,8 +96,10 @@ fun ProfileScreen(symbol: String, viewModel: CompanyInfoViewModel) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(text = "Market Summary")
                         Spacer(modifier = Modifier.height(16.dp))
+                        val first24StockInfos = state.stockInfos.take(24)
+
                         StockChart(
-                            info = state.stockInfos,
+                            info = first24StockInfos,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(125.dp)
