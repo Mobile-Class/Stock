@@ -85,7 +85,7 @@ fun ProfileScreen(symbol: String, viewModel: CompanyInfoViewModel) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = company.description,
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Divider(
